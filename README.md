@@ -54,6 +54,20 @@ Get a list of all occurences of a specific node type.
 * `--limit` (optional, default: 5) - With this parameter, you can limit the number of occurences that are listed in the report
 * `--start-at` (optional, default: 1) - Specifies the index of the result at which to start the report
 
+### report:nodetypes
+
+Get an overview of all your node types.
+
+```shell
+./flow report:nodetypes
+```
+
+**Options:**
+* `--super-type` (optional, default: 'TYPO3.Neos:Node') - With this parameter, you can limit the set of considered NodeTypes to those that inherit a specific SuperType
+* `--filter` (optional, default: '') - Filter your results with a shell glob pattern, leave this empty to not filter at all
+* `--abstract` (optional, default: false) - Consider abstract node types as well
+* `--oneline` (optional, default: false) - Creates a condensed report
+
 ## License
 
 See [LICENSE.md](./LICENSE.md)
