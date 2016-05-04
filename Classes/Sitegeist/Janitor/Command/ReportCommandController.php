@@ -171,6 +171,41 @@ class ReportCommandController extends CommandController
         }
     }
 
+    /**
+     * List node types
+     *
+     * @param string $superType List all subtypes of a given node type
+     * @param string $filter Filter your results by a glob pattern
+     * @param boolean $abstract Include abstract node types?
+     * @param boolean $oneline Make the report shorter
+     * @return void
+     */
+    public function nodeTypesCommand($superType = 'TYPO3.Neos:Node', $filter = '', $abstract = false, $oneline = false)
+    {
+        $this->outputReportHeadline('All SubNodeTypes of %s', [$superType]);
+
+        $nodeTypes = $this->nodeTypeManager->getSubNodeTypes($superType, $abstract);
+
+        foreach ($nodeTypes as $name => $nodeType) {
+            if ($filter) {
+                if (!fnmatch($filter, $name)) {
+                    continue;
+                }
+            }
+
+            if ($oneline) {
+                $this->outputLine($name);
+                continue;
+            }
+
+            $this->outputLine('<b>%s</b>', [$name]);
+            $this->outputLine('<b>abstract:</b> %s', [$nodeType->isAbstract() ? 'true' : 'false']);
+            $this->outputLine('<b>aggregate:</b> %s', [$nodeType->isAggregate() ? 'true' : 'false']);
+            $this->outputLine('<b>label:</b> %s', [$nodeType->getLabel()]);
+            $this->outputLine();
+        }
+    }
+
     protected function getClosestDocumentNode(NodeInterface $node)
     {
         if ($node->getNodeType()->isOfType('TYPO.Neos:Document')) {
