@@ -2,12 +2,14 @@
 namespace Sitegeist\Janitor\Command;
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Eel\FlowQuery\FlowQuery;
 use TYPO3\Flow\Cli\CommandController;
+use TYPO3\Neos\Controller\CreateContentContextTrait;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 use TYPO3\TYPO3CR\Domain\Service\ContentDimensionCombinator;
 use TYPO3\TYPO3CR\Domain\Repository\WorkspaceRepository;
-use TYPO3\Neos\Controller\CreateContentContextTrait;
-use TYPO3\Eel\FlowQuery\FlowQuery;
+use Sitegeist\Janitor\TYPO3CR\Service\NodeUriService;
 
 class ReportCommandController extends CommandController
 {
@@ -30,6 +32,12 @@ class ReportCommandController extends CommandController
      * @var WorkspaceRepository
      */
     protected $workspaceRepository;
+
+    /**
+     * @Flow\Inject
+     * @var NodeUriService
+     */
+    protected $nodeUriService;
 
     /**
      * Shows unused node types in your content repository
@@ -122,11 +130,16 @@ class ReportCommandController extends CommandController
                 $context = $this->createContentContext($workspace->getName(), $dimensionPreset);
                 $flowQuery = new FlowQuery([$context->getRootNode()]);
                 $nodes = $flowQuery->find(sprintf('[instanceof %s]', $nodeType));
+                $count = count($nodes);
 
-                if (count($nodes) > 0) {
+                if ($count > 0) {
                     $noOccurencesFound = false;
                 }
 
+                if (($nodeCounter - $startAt) >= $limit) {
+                    $nodeCounter += $count;
+                    continue;
+                }
 
                 foreach ($nodes as $node) {
                     if (++$nodeCounter >= $startAt && ($nodeCounter - $startAt) < $limit) {
@@ -136,7 +149,11 @@ class ReportCommandController extends CommandController
                         $this->outputLine();
                         $this->outputDimensionPreset($dimensionPreset);
                         $this->outputLine();
-                        $this->outputLine('<b>Link:</b> %s', ['TODO']);
+                        $this->outputLine('<b>Link:</b> %s', [
+                            $this->nodeUriService->buildUriFromNode(
+                                $this->getClosestDocumentNode($node)
+                            )
+                        ]);
                         $this->outputLine();
                     }
                 }
@@ -152,6 +169,16 @@ class ReportCommandController extends CommandController
         if ($noOccurencesFound) {
             $this->outputLine('No occurences found.');
         }
+    }
+
+    protected function getClosestDocumentNode(NodeInterface $node)
+    {
+        if ($node->getNodeType()->isOfType('TYPO.Neos:Document')) {
+            return $node;
+        }
+
+        $flowQuery = new FlowQuery(array($node));
+        return $flowQuery->closest('[instanceof TYPO3.Neos:Document]')->get(0);
     }
 
     protected function outputReportHeadline($reportName, $substitutions = [])
