@@ -44,16 +44,7 @@ class ReportCommandController extends CommandController
         $nodeTypes = $this->nodeTypeManager->getSubNodeTypes($superType);
         $nodeTypeNames = array_keys($nodeTypes);
 
-        if ($workspaces === '_all') {
-            $workspaces = $this->workspaceRepository->findAll();
-        } else {
-            $workspaceNames = explode(',', $workspaces);
-            $workspaces = [];
-
-            foreach($workspaceNames as $workspaceName) {
-                $workspaces[] = $this->workspaceRepository->findOneByName($workspaceName);
-            }
-        }
+        $workspaces = $this->resolveWorkspaces($workspaces);
 
         $dimensionPresets = $this->contentDimensionCombinator->getAllAllowedCombinations();
 
@@ -73,13 +64,10 @@ class ReportCommandController extends CommandController
                     $flowQuery = new FlowQuery([$context->getRootNode()]);
                     $nodes = $flowQuery->find(sprintf('[instanceof %s]', $nodeTypeName));
 
-                    if (count($nodes) <= $threshold) {
-                        if (!isset($results[$nodeTypeName])) {
-                            $results[$nodeTypeName] = 0;
-                        }
-
-                        $results[$nodeTypeName] += count($nodes);
+                    if (!isset($results[$nodeTypeName])) {
+                        $results[$nodeTypeName] = 0;
                     }
+                    $results[$nodeTypeName] += count($nodes);
 
                     $this->output->progressAdvance();
                 }
@@ -87,6 +75,14 @@ class ReportCommandController extends CommandController
                 $this->outputLine();
             }
         }
+
+        $filtered = [];
+        foreach ($results as $key => $value) {
+            if ($value <= $threshold) {
+                $filtered[$key] = $value;
+            }
+        }
+        $results = $filtered;
 
         $this->outputLine();
         $this->outputLine('===================== REPORT =====================');
@@ -103,6 +99,28 @@ class ReportCommandController extends CommandController
         foreach ($results as $key => $value) {
             $this->outputLine('%s (%d)', [$key, $value]);
         }
+    }
+
+    /**
+     * Resolve a comma separated list of workspace names to actual workspaces
+     *
+     * @param string $workspaces comma separated list of workspace names or '_all'
+     * @return [type] [description]
+     */
+    protected function resolveWorkspaces($workspaces)
+    {
+        if ($workspaces === '_all') {
+            $workspaces = $this->workspaceRepository->findAll();
+        } else {
+            $workspaceNames = explode(',', $workspaces);
+            $workspaces = [];
+
+            foreach($workspaceNames as $workspaceName) {
+                $workspaces[] = $this->workspaceRepository->findOneByName($workspaceName);
+            }
+        }
+
+        return $workspaces;
     }
 
     /**
