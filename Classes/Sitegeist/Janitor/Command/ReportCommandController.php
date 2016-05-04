@@ -35,12 +35,11 @@ class ReportCommandController extends CommandController
      * Shows unused node types in your content repository
      *
      * @param integer $threshold Consider all node types that have similar or less occurences than this
-     * @param boolean $showOccurences Show the documents in which you can find occurences of the respective node type
      * @param string $superType Limit the considered node types to a specific super type
      * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all (which can take a while)
      * @return void
      */
-    public function unusedCommand($threshold = 0, $showOccurences = false, $superType = 'TYPO3.Neos:Node', $workspaces = 'live')
+    public function unusedCommand($threshold = 0, $superType = 'TYPO3.Neos:Node', $workspaces = 'live')
     {
         $nodeTypes = $this->nodeTypeManager->getSubNodeTypes($superType);
         $nodeTypeNames = array_keys($nodeTypes);
@@ -76,17 +75,10 @@ class ReportCommandController extends CommandController
 
                     if (count($nodes) <= $threshold) {
                         if (!isset($results[$nodeTypeName])) {
-                            $results[$nodeTypeName] = [
-                                'count' => 0,
-                                'occurences' => []
-                            ];
+                            $results[$nodeTypeName] = 0;
                         }
 
-                        $results[$nodeTypeName]['count'] += count($nodes);
-
-                        if ($showOccurences) {
-                            // TODO
-                        }
+                        $results[$nodeTypeName] += count($nodes);
                     }
 
                     $this->output->progressAdvance();
@@ -109,7 +101,7 @@ class ReportCommandController extends CommandController
         $this->outputLine();
 
         foreach ($results as $key => $value) {
-            $this->outputLine('%s (%d)', [$key, $value['count']]);
+            $this->outputLine('%s (%d)', [$key, $value]);
         }
     }
 
