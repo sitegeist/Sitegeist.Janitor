@@ -1,0 +1,21 @@
+{
+    "name": "sitegeist/janitor",
+    "type": "typo3-flow-package",
+    "description": "Clean up your content repository",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Wilhelm Behncke",
+            "email": "behncke@sitegeist.de",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "typo3/neos": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Sitegeist\\Janitor": "Classes"
+        }
+    }
+}
