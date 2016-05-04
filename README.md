@@ -40,6 +40,20 @@ Find out, what NodeTypes are not used inside your Neos instance.
 * `--super-type` (optional, default: 'TYPO3.Neos:Node') - With this parameter, you can limit the set of considered NodeTypes to those that inherit a specific SuperType
 * `--workspaces` (optional, default: 'live') - You can also limit the set of considered workspaces
 
+### report:occurences
+
+Get a list of all occurences of a specific node type.
+
+```shell
+./flow report:occurences MyAwesome.Package:MyAwesomeNodeType
+```
+
+**Options:**
+* `--node-type` (required) - The node to which you want to find the occurences
+* `--workspaces` (optional, default: '\_all') - Limit the set of considered workspaces
+* `--limit` (optional, default: 5) - With this parameter, you can limit the number of occurences that are listed in the report
+* `--start-at` (optional, default: 1) - Specifies the index of the result at which to start the report
+
 ## License
 
 See [LICENSE.md](./LICENSE.md)
