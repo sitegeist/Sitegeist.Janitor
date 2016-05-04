@@ -84,9 +84,7 @@ class ReportCommandController extends CommandController
         }
         $results = $filtered;
 
-        $this->outputLine();
-        $this->outputLine('===================== REPORT =====================');
-        $this->outputLine();
+        $this->outputReportHeadline('Unused NodeTypes');
 
         if (count($results) === 0) {
             $this->outputLine('<success>Congratulations! No unused NodeTypes could be found :)</success>');
@@ -99,6 +97,70 @@ class ReportCommandController extends CommandController
         foreach ($results as $key => $value) {
             $this->outputLine('%s (%d)', [$key, $value]);
         }
+    }
+
+    /**
+     * Shows a list of context paths that belong to a specific node type
+     *
+     * @param string $nodeType The node type to search for
+     * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all
+     * @param integer $limit Limit he number of occurences
+     * @param integer $startAt The result index to start the report at
+     * @return void
+     */
+    public function occurencesCommand($nodeType, $workspaces = '_all', $limit = 5, $startAt = 1)
+    {
+        $this->outputReportHeadline('Occurences of %s', [$nodeType]);
+
+        $workspaces = $this->resolveWorkspaces($workspaces);
+        $dimensionPresets = $this->contentDimensionCombinator->getAllAllowedCombinations();
+
+        $noOccurencesFound = true;
+        $nodeCounter = 0;
+        foreach ($workspaces as $workspace) {
+            foreach ($dimensionPresets as $dimensionPreset) {
+                $context = $this->createContentContext($workspace->getName(), $dimensionPreset);
+                $flowQuery = new FlowQuery([$context->getRootNode()]);
+                $nodes = $flowQuery->find(sprintf('[instanceof %s]', $nodeType));
+
+                if (count($nodes) > 0) {
+                    $noOccurencesFound = false;
+                }
+
+
+                foreach ($nodes as $node) {
+                    if (++$nodeCounter >= $startAt && ($nodeCounter - $startAt) < $limit) {
+                        $this->outputLine('<b>%d.:</b>', [$nodeCounter]);
+                        $this->outputLine('<b>Context path:</b> %s', [$node->getContextPath()]);
+                        $this->outputWorkspace($workspace);
+                        $this->outputLine();
+                        $this->outputDimensionPreset($dimensionPreset);
+                        $this->outputLine();
+                        $this->outputLine('<b>Link:</b> %s', ['TODO']);
+                        $this->outputLine();
+                    }
+                }
+            }
+        }
+
+        if ($nodeCounter > $limit) {
+            $this->outputLine('There were %d occurences in total, but the number of results has been limited to %d', [
+                $nodeCounter, $limit
+            ]);
+        }
+
+        if ($noOccurencesFound) {
+            $this->outputLine('No occurences found.');
+        }
+    }
+
+    protected function outputReportHeadline($reportName, $substitutions = [])
+    {
+        $this->outputLine();
+        $this->outputLine('========================================= REPORT =============================================');
+        $this->outputLine('==  ' . $reportName, $substitutions);
+        $this->outputLine('==============================================================================================');
+        $this->outputLine();
     }
 
     /**
