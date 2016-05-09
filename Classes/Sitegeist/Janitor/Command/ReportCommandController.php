@@ -206,6 +206,45 @@ class ReportCommandController extends CommandController
         }
     }
 
+    /**
+     * Get a list of all places where the given node type is allowed to inserted
+     *
+     * @param string $nodeType
+     * @param string $filter
+     * @return void
+     */
+    public function whereAllowedCommand($nodeType, $filter = '')
+    {
+        $nodeType = $this->nodeTypeManager->getNodeType($nodeType);
+        $nodeTypes = $this->nodeTypeManager->getNodeTypes(false);
+
+        foreach ($nodeTypes as $referenceNodeType) {
+            if ($filter && !fnmatch($filter, $referenceNodeType->getName())) {
+                continue;
+            }
+
+            $directlyAllowed = $referenceNodeType->allowsChildNodeType($nodeType);
+            $nodeTypeHasBeenPrinted = false;
+
+            if ($directlyAllowed) {
+                $this->outputLine('<b>%s</b>', [$referenceNodeType->getName()]);
+                $nodeTypeHasBeenPrinted = true;
+            }
+
+            foreach ($referenceNodeType->getAutoCreatedChildNodes() as
+                $autoCreatedChildNodeName => $autoCreatedChildNodeTypeName) {
+
+                if ($referenceNodeType->allowsGrandchildNodeType($autoCreatedChildNodeName, $nodeType)) {
+                    if (!$nodeTypeHasBeenPrinted) {
+                        $this->outputLine('%s', [$referenceNodeType->getName()]);
+                    }
+
+                    $this->outputLine('    <b>%s</b>', [$autoCreatedChildNodeName]);
+                }
+            }
+        }
+    }
+
     protected function getClosestDocumentNode(NodeInterface $node)
     {
         if ($node->getNodeType()->isOfType('TYPO.Neos:Document')) {
