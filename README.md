@@ -68,6 +68,18 @@ Get an overview of all your node types.
 * `--abstract` (optional, default: false) - Consider abstract node types as well
 * `--oneline` (optional, default: false) - Creates a condensed report
 
+### report:whereallowed
+
+Find out where a particular node type is allowed. This command gives you a list of NodeTypes and auto created child nodes and highlights those in which the given node type is allowed.
+
+```shell
+./flow report:whereallowed TYPO3.Neos:Content
+```
+
+**Options:**
+* `--node-type` (required) - The node type to analyze
+* `--filter` (optional, default: '') - Filter your results with a shell glob pattern, leave this empty to not filter at all
+
 ## License
 
 See [LICENSE.md](./LICENSE.md)
