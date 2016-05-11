@@ -80,6 +80,21 @@ Find out where a particular node type is allowed. This command gives you a list 
 * `--node-type` (required) - The node type to analyze
 * `--filter` (optional, default: '') - Filter your results with a shell glob pattern, leave this empty to not filter at all
 
+### report:uris
+
+Get a list of all Uris for a given node type.
+
+```shell
+./flow report:uris
+```
+
+**Options:**
+* `--node-type` (optional, default: 'TYPO3.Neos:Document') - The node type to analyze
+* `--filter` (optional, default: '') - Filter your results with a shell glob pattern, leave this empty to not filter at all
+* `--workspace` (optional, default: 'live') - Limit your results to a certain workspace
+* `--verbose` (optional, default: false) - Increase verbosity
+* `--limit` (optional, default: 0) - Limit the number of your results (0 = no limit)
+
 ## License
 
 See [LICENSE.md](./LICENSE.md)
