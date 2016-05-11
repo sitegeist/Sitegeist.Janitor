@@ -143,6 +143,8 @@ class ReportCommandController extends CommandController
 
                 foreach ($nodes as $node) {
                     if (++$nodeCounter >= $startAt && ($nodeCounter - $startAt) < $limit) {
+                        $closestDocumentNode = $this->getClosestDocumentNode($node);
+
                         $this->outputLine('<b>%d.:</b>', [$nodeCounter]);
                         $this->outputLine('<b>Context path:</b> %s', [$node->getContextPath()]);
                         $this->outputWorkspace($workspace);
@@ -150,9 +152,9 @@ class ReportCommandController extends CommandController
                         $this->outputDimensionPreset($dimensionPreset);
                         $this->outputLine();
                         $this->outputLine('<b>Link:</b> %s', [
-                            $this->nodeUriService->buildUriFromNode(
-                                $this->getClosestDocumentNode($node)
-                            )
+                            $closestDocumentNode ? $this->nodeUriService->buildUriFromNode(
+                                $closestDocumentNode
+                            ) : 'No Document found'
                         ]);
                         $this->outputLine();
                     }
