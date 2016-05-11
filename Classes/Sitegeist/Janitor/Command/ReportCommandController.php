@@ -211,8 +211,8 @@ class ReportCommandController extends CommandController
     /**
      * Get a list of all places where the given node type is allowed to inserted
      *
-     * @param string $nodeType
-     * @param string $filter
+     * @param string $nodeType The node type to check for
+     * @param string $filter Filter your results by a glob pattern
      * @return void
      */
     public function whereAllowedCommand($nodeType, $filter = '')
@@ -243,6 +243,61 @@ class ReportCommandController extends CommandController
 
                     $this->outputLine('    <b>%s</b>', [$autoCreatedChildNodeName]);
                 }
+            }
+        }
+    }
+
+    /**
+     * Get all uris in your system
+     *
+     * @param string $nodeType Limit your results to a certain node type (must inherit from TYPO3.Neos:Document)
+     * @param string $filter Filter the node types to consider by a glob pattern
+     * @param string $workspace The workspace for which to generate the uris
+     * @param boolean $verbose Increase verbosity
+     * @param integer $limit Limit the number of results
+     * @return void
+     */
+    public function urisCommand($nodeType = 'TYPO3.Neos:Document', $filter = '', $workspace = 'live', $verbose = false, $limit = 0)
+    {
+        $this->outputReportHeadline('All Uris for %s', [$nodeType]);
+        $nodeType = $this->nodeTypeManager->getNodeType($nodeType);
+
+        if (!$nodeType->isOfType('TYPO3.Neos:Document')) {
+            $this->outputLine('<error>%s does not inherit from TYPO3.Neos:Document</error>', [$nodeType->getName()]);
+            exit(0);
+        }
+
+        $dimensionPresets = $this->contentDimensionCombinator->getAllAllowedCombinations();
+
+        $lineCount = 0;
+        foreach ($dimensionPresets as $dimensionPreset) {
+            $context = $this->createContentContext($workspace, $dimensionPreset);
+            $flowQuery = new FlowQuery([$context->getRootNode()]);
+            $nodes = $flowQuery->find(sprintf('[instanceof %s]', $nodeType->getName()));
+            $errorCount = 0;
+
+            foreach ($nodes as $node) {
+                if ($limit > 0 && $lineCount++ >= $limit) {
+                    break;
+                }
+                try {
+                    $this->outputLine(
+                        $this->nodeUriService->buildUriFromNode(
+                            $node
+                        )
+                    );
+                } catch(\Exception $e) {
+                    $errorCount++;
+
+                    if ($verbose) {
+                        $this->outputLine('[ERROR]: %s', [$e->getMessage()]);
+                    }
+                }
+            }
+
+            if ($errorCount) {
+                $this->outputLine();
+                $this->outputLine('(!) There were %d errors during this report', [$errorCount]);
             }
         }
     }
