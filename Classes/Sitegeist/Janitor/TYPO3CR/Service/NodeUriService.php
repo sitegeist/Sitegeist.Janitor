@@ -1,6 +1,18 @@
 <?php
 namespace Sitegeist\Janitor\TYPO3CR\Service;
 
+/*
+ * Copyright notice
+ *
+ * (c) 2016 Wilhelm Behncke <behncke@sitegeist.de>
+ * All rights reserved
+ *
+ * This file is part of the Sitegeist/Package project under <licence>.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.md file that was distributed with this source code.
+ */
+
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Configuration\ConfigurationManager;
 use TYPO3\Flow\Http\Request;
@@ -12,7 +24,10 @@ use TYPO3\Neos\Domain\Service\NodeShortcutResolver;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
 /**
+ * Various utility methods for handling node uris
+ *
  * @Flow\Scope("singleton")
+ * @author Wilhelm Behncke <behncke@sitegeist.de>
  */
 class NodeUriService
 {
@@ -56,7 +71,7 @@ class NodeUriService
     }
 
     /**
-     * Get the URI to a given node instance
+     * Get the URI to a given node
      *
      * @param NodeInterface $node
      * @param boolean $resolveShortcuts
@@ -78,7 +93,9 @@ class NodeUriService
                 1414771137);
         }
 
+        //
         // create a dummy parent request
+        //
         $httpRequest = Request::create(new Uri('http://neos.io'));
         $request = new ActionRequest($httpRequest);
 

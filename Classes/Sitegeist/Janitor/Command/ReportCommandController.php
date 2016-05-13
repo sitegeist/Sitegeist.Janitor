@@ -1,6 +1,18 @@
 <?php
 namespace Sitegeist\Janitor\Command;
 
+/*
+ * Copyright notice
+ *
+ * (c) 2016 Wilhelm Behncke <behncke@sitegeist.de>
+ * All rights reserved
+ *
+ * This file is part of the Sitegeist/Package project under <licence>.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.md file that was distributed with this source code.
+ */
+
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Eel\FlowQuery\FlowQuery;
 use TYPO3\Flow\Cli\CommandController;
@@ -11,6 +23,12 @@ use TYPO3\TYPO3CR\Domain\Service\ContentDimensionCombinator;
 use TYPO3\TYPO3CR\Domain\Repository\WorkspaceRepository;
 use Sitegeist\Janitor\TYPO3CR\Service\NodeUriService;
 
+/**
+ * A command controller to generate various reports about
+ * your content repository
+ *
+ * @author Wilhelm Behncke <behncke@sitegeist.de>
+ */
 class ReportCommandController extends CommandController
 {
     use CreateContentContextTrait;
@@ -302,6 +320,13 @@ class ReportCommandController extends CommandController
         }
     }
 
+    /**
+     * Find the closest document node to a given node or that node itself, if
+     * it already is a document node
+     *
+     * @param NodeInterface $node
+     * @return NodeInterface
+     */
     protected function getClosestDocumentNode(NodeInterface $node)
     {
         if ($node->getNodeType()->isOfType('TYPO.Neos:Document')) {
@@ -312,6 +337,13 @@ class ReportCommandController extends CommandController
         return $flowQuery->closest('[instanceof TYPO3.Neos:Document]')->get(0);
     }
 
+    /**
+     * Helper method to output report headlines
+     *
+     * @param string $reportName The actual headline (can contain sprintf-style placeholders)
+     * @param string $substitutions Substitution values
+     * @return void
+     */
     protected function outputReportHeadline($reportName, $substitutions = [])
     {
         $this->outputLine();
@@ -325,7 +357,7 @@ class ReportCommandController extends CommandController
      * Resolve a comma separated list of workspace names to actual workspaces
      *
      * @param string $workspaces comma separated list of workspace names or '_all'
-     * @return [type] [description]
+     * @return array<Workspace>
      */
     protected function resolveWorkspaces($workspaces)
     {
