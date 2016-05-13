@@ -2,6 +2,12 @@
 
 > Clean up your content repository
 
+## Authors & Sponsors
+
+* Wilhelm Behncke - behncke@sitegeist.de
+
+*The development and the public-releases of this package is generously sponsored by our employer http://www.sitegeist.de.*
+
 ## Installation
 
 Add this to your composer.json:
@@ -19,7 +25,7 @@ Add this to your composer.json:
 Now you can require Sitegeist.Janitor with composer:
 
 ```
-composer require sitegeist/janitor
+composer require --dev sitegeist/janitor
 ```
 
 ## Usage
@@ -94,6 +100,12 @@ Get a list of all Uris for a given node type.
 * `--workspace` (optional, default: 'live') - Limit your results to a certain workspace
 * `--verbose` (optional, default: false) - Increase verbosity
 * `--limit` (optional, default: 0) - Limit the number of your results (0 = no limit)
+
+## Contributions
+
+We will gladly accept contributions. Please send us pull requests.
+
+In lieu of a formal styleguide, take care to maintain the existing coding style. Please make sure to contribute [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) compliant sources.
 
 ## License
 
