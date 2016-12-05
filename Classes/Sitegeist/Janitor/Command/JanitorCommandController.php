@@ -58,11 +58,44 @@ class JanitorCommandController extends CommandController
      * Show information about node
      *
      * @param string $nodePath
+     * @param string $workspaceName
      * @return void
      */
-    public function showCommand($nodePath)
+    public function showCommand($nodePath, $workspaceName = 'live')
     {
-        $this->outputLine('Not implemented yet');
+        $context = $this->createContentContext($workspaceName, []);
+        $flowQuery = new FlowQuery([$context->getRootNode()]);
+        $subjectNode = $flowQuery->find($nodePath)->get(0);
+
+        if ($subjectNode) {
+            $this->outputLine();
+
+            $this->outputLine('Node <b>"%s"</b> of type <b>%s</b>', [
+                $subjectNode->getLabel(),
+                $subjectNode->getNodeType()->getName()
+            ]);
+
+            $this->outputLine();
+            $this->outputLine('<b>Properties:</b>');
+            $this->outputLine();
+
+            $this->outputLine(json_encode($subjectNode->getProperties(), JSON_PRETTY_PRINT));
+
+            $this->outputLine();
+            $this->outputLine('<b>Children:</b>');
+            $this->outputLine();
+
+            foreach ($subjectNode->getChildNodes() as $childNode) {
+                $this->outputLine('    <b>%s</b>', [$childNode->getPath()]);
+                $this->outputLine('    <i>%s</i>', [$childNode->getLabel()]);
+                $this->outputLine('    %s', [$childNode->getNodeType()->getName()]);
+                $this->outputLine();
+            }
+        } else {
+            $this->outputLine();
+            $this->outputLine('<error>Node not found</error>');
+            $this->outputLine();
+        }
     }
 
     /**
