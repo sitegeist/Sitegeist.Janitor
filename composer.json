@@ -1,6 +1,6 @@
 {
     "name": "sitegeist/janitor",
-    "type": "neos-flow-package",
+    "type": "neos-package",
     "description": "Clean up your content repository",
     "license": "GPL-3.0+",
     "authors": [
