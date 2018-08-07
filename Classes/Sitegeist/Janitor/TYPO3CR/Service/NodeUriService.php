@@ -20,7 +20,7 @@ use Neos\Flow\Http\Uri;
 use Neos\Flow\Mvc\Routing\RouterInterface;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\Mvc\ActionRequest;
-use TYPO3\Neos\Domain\Service\NodeShortcutResolver;
+use Neos\Neos\Domain\Service\NodeShortcutResolver;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
 /**
@@ -105,6 +105,6 @@ class NodeUriService
         return $uriBuilder
             ->reset()
             ->setFormat($request->getFormat())
-            ->uriFor('show', array('node' => $resolvedNode), 'Frontend\Node', 'TYPO3.Neos');
+            ->uriFor('show', array('node' => $resolvedNode), 'Frontend\Node', 'Neos.Neos');
     }
 }

@@ -16,7 +16,7 @@ namespace Sitegeist\Janitor\Command;
 use Neos\Flow\Annotations as Flow;
 use Neos\Eel\FlowQuery\FlowQuery;
 use Neos\Flow\Cli\CommandController;
-use TYPO3\Neos\Controller\CreateContentContextTrait;
+use Neos\Neos\Controller\CreateContentContextTrait;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 use TYPO3\TYPO3CR\Domain\Service\ContentDimensionCombinator;
@@ -65,7 +65,7 @@ class ReportCommandController extends CommandController
      * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all (which can take a while)
      * @return void
      */
-    public function unusedCommand($threshold = 0, $superType = 'TYPO3.Neos:Node', $workspaces = 'live')
+    public function unusedCommand($threshold = 0, $superType = 'Neos.Neos:Node', $workspaces = 'live')
     {
         $nodeTypes = $this->nodeTypeManager->getSubNodeTypes($superType);
         $nodeTypeNames = array_keys($nodeTypes);
@@ -200,7 +200,7 @@ class ReportCommandController extends CommandController
      * @param boolean $oneline Make the report shorter
      * @return void
      */
-    public function nodeTypesCommand($superType = 'TYPO3.Neos:Node', $filter = '', $abstract = false, $oneline = false)
+    public function nodeTypesCommand($superType = 'Neos.Neos:Node', $filter = '', $abstract = false, $oneline = false)
     {
         $this->outputReportHeadline('All SubNodeTypes of %s', [$superType]);
 
@@ -268,20 +268,20 @@ class ReportCommandController extends CommandController
     /**
      * Get all uris in your system
      *
-     * @param string $nodeType Limit your results to a certain node type (must inherit from TYPO3.Neos:Document)
+     * @param string $nodeType Limit your results to a certain node type (must inherit from Neos.Neos:Document)
      * @param string $filter Filter the node types to consider by a glob pattern
      * @param string $workspace The workspace for which to generate the uris
      * @param boolean $verbose Increase verbosity
      * @param integer $limit Limit the number of results
      * @return void
      */
-    public function urisCommand($nodeType = 'TYPO3.Neos:Document', $filter = '', $workspace = 'live', $verbose = false, $limit = 0)
+    public function urisCommand($nodeType = 'Neos.Neos:Document', $filter = '', $workspace = 'live', $verbose = false, $limit = 0)
     {
         $this->outputReportHeadline('All Uris for %s', [$nodeType]);
         $nodeType = $this->nodeTypeManager->getNodeType($nodeType);
 
-        if (!$nodeType->isOfType('TYPO3.Neos:Document')) {
-            $this->outputLine('<error>%s does not inherit from TYPO3.Neos:Document</error>', [$nodeType->getName()]);
+        if (!$nodeType->isOfType('Neos.Neos:Document')) {
+            $this->outputLine('<error>%s does not inherit from Neos.Neos:Document</error>', [$nodeType->getName()]);
             exit(0);
         }
 
@@ -334,7 +334,7 @@ class ReportCommandController extends CommandController
         }
 
         $flowQuery = new FlowQuery(array($node));
-        return $flowQuery->closest('[instanceof TYPO3.Neos:Document]')->get(0);
+        return $flowQuery->closest('[instanceof Neos.Neos:Document]')->get(0);
     }
 
     /**
