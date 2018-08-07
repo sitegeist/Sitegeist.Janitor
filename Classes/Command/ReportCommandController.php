@@ -13,6 +13,8 @@ namespace Sitegeist\Janitor\Command;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Neos\ContentRepository\Domain\Model\NodeType;
+use Neos\ContentRepository\Domain\Model\Workspace;
 use Neos\Flow\Annotations as Flow;
 use Neos\Eel\FlowQuery\FlowQuery;
 use Neos\Flow\Cli\CommandController;
@@ -64,6 +66,7 @@ class ReportCommandController extends CommandController
      * @param string $superType Limit the considered node types to a specific super type
      * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all (which can take a while)
      * @return void
+     * @throws \Neos\Eel\Exception
      */
     public function unusedCommand($threshold = 0, $superType = 'Neos.Neos:Node', $workspaces = 'live')
     {
@@ -133,6 +136,7 @@ class ReportCommandController extends CommandController
      * @param integer $limit Limit he number of occurences
      * @param integer $startAt The result index to start the report at
      * @return void
+     * @throws \Neos\Eel\Exception
      */
     public function occurencesCommand($nodeType, $workspaces = '_all', $limit = 5, $startAt = 1)
     {
@@ -232,10 +236,12 @@ class ReportCommandController extends CommandController
      * @param string $nodeType The node type to check for
      * @param string $filter Filter your results by a glob pattern
      * @return void
+     * @throws \Neos\ContentRepository\Exception\NodeTypeNotFoundException
      */
     public function whereAllowedCommand($nodeType, $filter = '')
     {
         $nodeType = $this->nodeTypeManager->getNodeType($nodeType);
+        /** @var array|NodeType[] $nodeTypes */
         $nodeTypes = $this->nodeTypeManager->getNodeTypes(false);
 
         foreach ($nodeTypes as $referenceNodeType) {
@@ -274,6 +280,8 @@ class ReportCommandController extends CommandController
      * @param boolean $verbose Increase verbosity
      * @param integer $limit Limit the number of results
      * @return void
+     * @throws \Neos\ContentRepository\Exception\NodeTypeNotFoundException
+     * @throws \Neos\Eel\Exception
      */
     public function urisCommand($nodeType = 'Neos.Neos:Document', $filter = '', $workspace = 'live', $verbose = false, $limit = 0)
     {
@@ -326,6 +334,7 @@ class ReportCommandController extends CommandController
      *
      * @param NodeInterface $node
      * @return NodeInterface
+     * @throws \Neos\Eel\Exception
      */
     protected function getClosestDocumentNode(NodeInterface $node)
     {

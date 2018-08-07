@@ -61,6 +61,7 @@ class NodeUriService
      * Initialize the injected router-object
      *
      * @return void
+     * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException
      */
     protected function initializeRouter() {
         $routesConfiguration = $this->configurationManager->getConfiguration(
@@ -76,6 +77,7 @@ class NodeUriService
      * @param NodeInterface $node
      * @param boolean $resolveShortcuts
      * @return string The rendered URI
+     * @throws \Neos\Flow\Mvc\Routing\Exception\MissingActionNameException
      */
     public function buildUriFromNode(NodeInterface $node, $resolveShortcuts = TRUE) {
         if ($resolveShortcuts) {

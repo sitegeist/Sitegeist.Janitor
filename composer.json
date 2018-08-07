@@ -1,6 +1,6 @@
 {
     "name": "sitegeist/janitor",
-    "type": "typo3-flow-package",
+    "type": "neos-flow-package",
     "description": "Clean up your content repository",
     "license": "GPL-3.0+",
     "authors": [
@@ -11,11 +11,11 @@
         }
     ],
     "require": {
-        "typo3/neos": "*"
+        "neos/neos": "~3.0|~4.0"
     },
     "autoload": {
-        "psr-0": {
-            "Sitegeist\\Janitor": "Classes"
+        "psr-4": {
+            "Sitegeist\\Janitor\\": "Classes"
         }
     },
     "extra": {

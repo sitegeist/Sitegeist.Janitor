@@ -22,10 +22,7 @@ use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Service\NodeOperations;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
-use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Domain\Service\ContentDimensionCombinator;
-use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
-use Sitegeist\Janitor\TYPO3CR\Service\NodeUriService;
 
 /**
  * A command controller to perform certain operations on the CR
@@ -60,6 +57,7 @@ class JanitorCommandController extends CommandController
      * @param string $nodePath
      * @param string $workspaceName
      * @return void
+     * @throws \Neos\Eel\Exception
      */
     public function showCommand($nodePath, $workspaceName = 'live')
     {
@@ -67,7 +65,7 @@ class JanitorCommandController extends CommandController
         $flowQuery = new FlowQuery([$context->getRootNode()]);
         $subjectNode = $flowQuery->find($nodePath)->get(0);
 
-        if ($subjectNode) {
+        if ($subjectNode instanceof NodeInterface) {
             $this->outputLine();
 
             $this->outputLine('Node <b>"%s"</b> of type <b>%s</b>', [
@@ -104,6 +102,10 @@ class JanitorCommandController extends CommandController
      * @param string $sourceSiteNodeName
      * @param string $targetSiteNodeName
      * @return void
+     * @throws \Neos\ContentRepository\Exception\NodeException
+     * @throws \Neos\Eel\Exception
+     * @throws \Neos\Flow\ObjectManagement\Exception\UnresolvedDependenciesException
+     * @throws \Neos\Flow\Persistence\Exception\IllegalObjectTypeException
      */
     public function copySiteCommand($sourceSiteNodeName, $targetSiteNodeName)
     {
@@ -114,6 +116,7 @@ class JanitorCommandController extends CommandController
             $flowQuery = new FlowQuery([$context->getRootNode()]);
             $sitesNode = $flowQuery->find(sprintf('/sites', $sourceSiteNodeName))->get(0);
             $sourceSiteNode = $flowQuery->find(sprintf('/sites/%s', $sourceSiteNodeName))->get(0);
+            /** @var Site $sourceSite */
             $sourceSite = $this->siteRepository->findOneByNodeName($sourceSiteNodeName);
 
             $targetSiteNode = $this->nodeOperations->copy($sourceSiteNode, $sitesNode, 'into', $targetSiteNodeName);
