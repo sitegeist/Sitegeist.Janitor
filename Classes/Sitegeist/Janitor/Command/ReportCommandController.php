@@ -17,10 +17,10 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Eel\FlowQuery\FlowQuery;
 use Neos\Flow\Cli\CommandController;
 use Neos\Neos\Controller\CreateContentContextTrait;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
-use TYPO3\TYPO3CR\Domain\Service\ContentDimensionCombinator;
-use TYPO3\TYPO3CR\Domain\Repository\WorkspaceRepository;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Domain\Service\ContentDimensionCombinator;
+use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
 use Sitegeist\Janitor\TYPO3CR\Service\NodeUriService;
 
 /**

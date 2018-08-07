@@ -21,7 +21,7 @@ use Neos\Flow\Mvc\Routing\RouterInterface;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Neos\Domain\Service\NodeShortcutResolver;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
 
 /**
  * Various utility methods for handling node uris
