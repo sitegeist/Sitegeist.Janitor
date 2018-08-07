@@ -14,7 +14,7 @@ namespace Sitegeist\Janitor\Command;
  */
 
 use Neos\Flow\Annotations as Flow;
-use TYPO3\Eel\FlowQuery\FlowQuery;
+use Neos\Eel\FlowQuery\FlowQuery;
 use Neos\Flow\Cli\CommandController;
 use TYPO3\Neos\Controller\CreateContentContextTrait;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
