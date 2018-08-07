@@ -14,9 +14,9 @@ namespace Sitegeist\Janitor\Command;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 use TYPO3\Eel\FlowQuery\FlowQuery;
-use TYPO3\Flow\Cli\CommandController;
+use Neos\Flow\Cli\CommandController;
 use TYPO3\Neos\Controller\CreateContentContextTrait;
 use TYPO3\Neos\Domain\Repository\SiteRepository;
 use TYPO3\Neos\Domain\Model\Site;

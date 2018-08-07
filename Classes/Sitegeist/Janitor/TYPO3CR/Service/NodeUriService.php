@@ -13,13 +13,13 @@ namespace Sitegeist\Janitor\TYPO3CR\Service;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\Http\Request;
-use TYPO3\Flow\Http\Uri;
-use TYPO3\Flow\Mvc\Routing\RouterInterface;
-use TYPO3\Flow\Mvc\Routing\UriBuilder;
-use TYPO3\Flow\Mvc\ActionRequest;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Http\Request;
+use Neos\Flow\Http\Uri;
+use Neos\Flow\Mvc\Routing\RouterInterface;
+use Neos\Flow\Mvc\Routing\UriBuilder;
+use Neos\Flow\Mvc\ActionRequest;
 use TYPO3\Neos\Domain\Service\NodeShortcutResolver;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
