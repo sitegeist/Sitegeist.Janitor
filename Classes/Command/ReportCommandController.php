@@ -23,7 +23,7 @@ use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Domain\Service\ContentDimensionCombinator;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
-use Sitegeist\Janitor\TYPO3CR\Service\NodeUriService;
+use Sitegeist\Janitor\ContentRepository\Service\NodeUriService;
 
 /**
  * A command controller to generate various reports about
@@ -138,7 +138,7 @@ class ReportCommandController extends CommandController
      * @return void
      * @throws \Neos\Eel\Exception
      */
-    public function occurencesCommand($nodeType, $workspaces = '_all', $limit = 5, $startAt = 1)
+    public function occurencesCommand($nodeType, $workspaces = 'live', $limit = 5, $startAt = 1)
     {
         $this->outputReportHeadline('Occurences of %s', [$nodeType]);
 

@@ -1,5 +1,5 @@
 <?php
-namespace Sitegeist\Janitor\TYPO3CR\Service;
+namespace Sitegeist\Janitor\ContentRepository\Service;
 
 /*
  * Copyright notice
@@ -15,13 +15,13 @@ namespace Sitegeist\Janitor\TYPO3CR\Service;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
-use Neos\Flow\Http\Request;
-use Neos\Flow\Http\Uri;
 use Neos\Flow\Mvc\Routing\RouterInterface;
-use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Neos\Domain\Service\NodeShortcutResolver;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
+use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Uri;
+use Sitegeist\Janitor\Service\UriBuilder;
 
 /**
  * Various utility methods for handling node uris
@@ -48,6 +48,12 @@ class NodeUriService
      * @var RouterInterface
      */
     protected $router;
+
+    /**
+     * @Flow\Inject
+     * @var UriBuilder
+     */
+    protected $uriBuilder;
 
     /**
      * Constructor
@@ -95,18 +101,22 @@ class NodeUriService
                 1414771137);
         }
 
+        $reflection = new \ReflectionClass($this->uriBuilder);
+        $property = $reflection->getProperty('baseUriProvider');
+        $property->setAccessible(true);
+        $subj = $property->getValue($this->uriBuilder);
+
         //
         // create a dummy parent request
         //
-        $httpRequest = Request::create(new Uri('http://neos.io'));
-        $request = new ActionRequest($httpRequest);
+        $httpRequest = new ServerRequest('get', 'https://domain.tld' );
+        $request = ActionRequest::fromHttpRequest($httpRequest);
+        $this->uriBuilder->setRequest($request);
 
-        $uriBuilder = new UriBuilder();
-        $uriBuilder->setRequest($request);
-
-        return $uriBuilder
-            ->reset()
-            ->setFormat($request->getFormat())
+        $uri = $this->uriBuilder
+            ->setFormat('html')
             ->uriFor('show', array('node' => $resolvedNode), 'Frontend\Node', 'Neos.Neos');
+
+        return $uri;
     }
 }
