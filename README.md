@@ -31,7 +31,7 @@ Find out, what NodeTypes are not used inside your Neos instance.
 
 **Options:**
 * `--threshold` (optional, default: 0) - You can use this parameter to detect more than just unused NodeTypes, but basically all NodeTypes that have lesser occurences than this threshold
-* `--super-type` (optional, default: 'TYPO3.Neos:Node') - With this parameter, you can limit the set of considered NodeTypes to those that inherit a specific SuperType
+* `--super-type` (optional, default: 'Neos.Neos:Node') - With this parameter, you can limit the set of considered NodeTypes to those that inherit a specific SuperType
 * `--workspaces` (optional, default: 'live') - You can also limit the set of considered workspaces
 
 ### report:occurences
@@ -57,7 +57,7 @@ Get an overview of all your node types.
 ```
 
 **Options:**
-* `--super-type` (optional, default: 'TYPO3.Neos:Node') - With this parameter, you can limit the set of considered NodeTypes to those that inherit a specific SuperType
+* `--super-type` (optional, default: 'Neos.Neos:Node') - With this parameter, you can limit the set of considered NodeTypes to those that inherit a specific SuperType
 * `--filter` (optional, default: '') - Filter your results with a shell glob pattern, leave this empty to not filter at all
 * `--abstract` (optional, default: false) - Consider abstract node types as well
 * `--oneline` (optional, default: false) - Creates a condensed report
@@ -67,7 +67,7 @@ Get an overview of all your node types.
 Find out where a particular node type is allowed. This command gives you a list of NodeTypes and auto created child nodes and highlights those in which the given node type is allowed.
 
 ```shell
-./flow report:whereallowed TYPO3.Neos:Content
+./flow report:whereallowed Neos.Neos:Content
 ```
 
 **Options:**
@@ -83,7 +83,7 @@ Get a list of all Uris for a given node type.
 ```
 
 **Options:**
-* `--node-type` (optional, default: 'TYPO3.Neos:Document') - The node type to analyze
+* `--node-type` (optional, default: 'Neos.Neos:Document') - The node type to analyze
 * `--filter` (optional, default: '') - Filter your results with a shell glob pattern, leave this empty to not filter at all
 * `--workspace` (optional, default: 'live') - Limit your results to a certain workspace
 * `--verbose` (optional, default: false) - Increase verbosity
