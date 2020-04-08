@@ -10,21 +10,9 @@
 
 ## Installation
 
-Add this to your composer.json:
+Sitegeist.Janitor is available via packagist:
 
-```
-{
-  "repositories": [
-    {
-        "url": "ssh://git@git.sitegeist.de:40022/sitegeist/Sitegeist.Janitor.git",
-        "type": "vcs"
-    }
-  ]
-}
-```
-Now you can require Sitegeist.Janitor with composer:
-
-```
+```shell
 composer require --dev sitegeist/janitor
 ```
 
