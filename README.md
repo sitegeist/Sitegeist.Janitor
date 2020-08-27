@@ -16,7 +16,7 @@ composer require --dev sitegeist/janitor
 
 ## Usage
 
-Sitegeist.Janitor consists of a couple of tools commands to help you inspect your content repository and discover
+Sitegeist.Janitor consists of a couple of tools to help you inspect your content repository and discover
 optimization potential. In addition it adds an automatic help message in the neos ui for every nodeType and property 
 to get the exact names and types fast.
 
