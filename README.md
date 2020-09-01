@@ -1,6 +1,6 @@
 # Sitegeist.Janitor
 
-> Clean up your content repository
+> Tools for the  content repository
 
 ## Authors & Sponsors
 
@@ -10,28 +10,15 @@
 
 ## Installation
 
-Add this to your composer.json:
-
-```
-{
-  "repositories": [
-    {
-        "url": "ssh://git@git.sitegeist.de:40022/sitegeist/Sitegeist.Janitor.git",
-        "type": "vcs"
-    }
-  ]
-}
-```
-Now you can require Sitegeist.Janitor with composer:
-
 ```
 composer require --dev sitegeist/janitor
 ```
 
 ## Usage
 
-Sitegeist.Janitor consists of a couple of flow commands to help you inspect your content repository and discover
-optimization potential.
+Sitegeist.Janitor consists of a couple of tools to help you inspect your content repository and discover
+optimization potential. In addition it adds an automatic help message in the neos ui for every nodeType and property 
+to get the exact names and types fast.
 
 ### report:unused
 
