@@ -1,0 +1,5 @@
+'Neos.Neos:Node':
+  postprocessors:
+    'IntegratorHelpMessagePostprocessor':
+      position: 'end'
+      postprocessor: 'Sitegeist\Janitor\NodeTypePostprocessor\IntegratorHelpMessagePostprocessor'
