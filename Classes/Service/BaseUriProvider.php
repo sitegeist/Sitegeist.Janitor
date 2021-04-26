@@ -5,6 +5,7 @@ use Neos\Flow\Annotations as Flow;
 use GuzzleHttp\Psr7\Uri;
 use Neos\Flow\Http\BaseUriProvider as FlowBaseUriProvider;
 use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class BaseUriProvider
@@ -17,7 +18,7 @@ class BaseUriProvider extends  FlowBaseUriProvider
      *
      * @return UriInterface
      */
-    public function getConfiguredBaseUriOrFallbackToCurrentRequest(): UriInterface
+    public function getConfiguredBaseUriOrFallbackToCurrentRequest(ServerRequestInterface $fallbackRequest = null): UriInterface
     {
         return new Uri('https://domain.tld');
     }
