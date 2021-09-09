@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "neos/neos": "~5.0 || dev-master",
+        "neos/neos": ">=5.0 || dev-master",
         "neos/flow": ">=6.3.2 || dev-master"
     },
     "autoload": {
