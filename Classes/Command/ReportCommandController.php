@@ -65,10 +65,11 @@ class ReportCommandController extends CommandController
      * @param integer $threshold Consider all node types that have similar or less occurences than this
      * @param string $superType Limit the considered node types to a specific super type
      * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all (which can take a while)
+     * @param string $dimensions Dimension values as
      * @return void
      * @throws \Neos\Eel\Exception
      */
-    public function unusedCommand($threshold = 0, $superType = 'Neos.Neos:Node', $workspaces = 'live')
+    public function unusedCommand($threshold = 0, $superType = 'Neos.Neos:Node', $workspaces = 'live', $dimensions = null)
     {
         $nodeTypes = $this->nodeTypeManager->getSubNodeTypes($superType);
         $nodeTypeNames = array_keys($nodeTypes);
@@ -76,10 +77,15 @@ class ReportCommandController extends CommandController
         $workspaces = $this->resolveWorkspaces($workspaces);
 
         $dimensionPresets = $this->contentDimensionCombinator->getAllAllowedCombinations();
+        $dimensionsParsed = $dimensions ? json_decode($dimensions, true) : null;
 
         $results = [];
         foreach ($workspaces as $workspace) {
             foreach ($dimensionPresets as $dimensionPreset) {
+                if ($dimensionsParsed && $dimensionsParsed != $dimensionPreset)  {
+                    $this->outputLine('Skipped ' . json_encode($dimensionPreset));
+                    continue;
+                }
                 $this->outputLine('Checking...');
                 $this->outputWorkspace($workspace);
                 $this->outputLine();

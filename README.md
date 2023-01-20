@@ -18,7 +18,7 @@ composer require --dev sitegeist/janitor
 ## Usage
 
 Sitegeist.Janitor consists of a couple of tools to help you inspect your content repository and discover
-optimization potential. In addition it adds an automatic help message in the neos ui for every nodeType and property 
+optimization potential. In addition it adds an automatic help message in the neos ui for every nodeType and property
 to get the exact names and types fast.
 
 ### report:unused
@@ -33,6 +33,7 @@ Find out, what NodeTypes are not used inside your Neos instance.
 * `--threshold` (optional, default: 0) - You can use this parameter to detect more than just unused NodeTypes, but basically all NodeTypes that have lesser occurences than this threshold
 * `--super-type` (optional, default: 'Neos.Neos:Node') - With this parameter, you can limit the set of considered NodeTypes to those that inherit a specific SuperType
 * `--workspaces` (optional, default: 'live') - You can also limit the set of considered workspaces
+* `--dimensions` (optional, default: null) - Specify dimensionvalues to limit the analysis as json like `--dimensions '{"language":["de"]}'`
 
 ### report:occurences
 

@@ -24,7 +24,8 @@ class IntegratorHelpMessagePostprocessor implements NodeTypePostprocessorInterfa
 
         foreach ($configuration['properties'] as $propertyName => &$propertyConfiguration) {
             if (isset($propertyConfiguration['ui'])) {
-                $propertyConfiguration['ui']['help']['message'] = 'property: ' . $propertyName .' ,type: ' . $propertyConfiguration['type'];
+                $helpMessage = $propertyConfiguration['ui']['help']['message'] ?? '';
+                $propertyConfiguration['ui']['help']['message'] = 'property: ' . $propertyName .' ,type: ' . ($propertyConfiguration['type'] ?? 'unknown') . ' ' . $helpMessage;
             }
         }
     }
