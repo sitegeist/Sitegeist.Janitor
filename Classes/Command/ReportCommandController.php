@@ -65,7 +65,7 @@ class ReportCommandController extends CommandController
      * @param integer $threshold Consider all node types that have similar or less occurences than this
      * @param string $superType Limit the considered node types to a specific super type
      * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all (which can take a while)
-     * @param string $dimensions Dimension values as
+     * @param string $dimensions Dimension values as json
      * @return void
      * @throws \Neos\Eel\Exception
      */
@@ -141,20 +141,26 @@ class ReportCommandController extends CommandController
      * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all
      * @param integer $limit Limit he number of occurences
      * @param integer $startAt The result index to start the report at
+     * @param string $dimensions Dimension values as json
      * @return void
      * @throws \Neos\Eel\Exception
      */
-    public function occurencesCommand($nodeType, $workspaces = 'live', $limit = 5, $startAt = 1)
+    public function occurencesCommand($nodeType, $workspaces = 'live', $limit = 5, $startAt = 1, $dimensions = null)
     {
         $this->outputReportHeadline('Occurences of %s', [$nodeType]);
 
         $workspaces = $this->resolveWorkspaces($workspaces);
         $dimensionPresets = $this->contentDimensionCombinator->getAllAllowedCombinations();
+        $dimensionsParsed = $dimensions ? json_decode($dimensions, true) : null;
 
         $noOccurencesFound = true;
         $nodeCounter = 0;
         foreach ($workspaces as $workspace) {
             foreach ($dimensionPresets as $dimensionPreset) {
+                if ($dimensionsParsed && $dimensionsParsed != $dimensionPreset)  {
+                    $this->outputLine('Skipped ' . json_encode($dimensionPreset));
+                    continue;
+                }
                 $context = $this->createContentContext($workspace->getName(), $dimensionPreset);
                 $flowQuery = new FlowQuery([$context->getRootNode()]);
                 $nodes = $flowQuery->find(sprintf('[instanceof %s]', $nodeType));
@@ -179,11 +185,11 @@ class ReportCommandController extends CommandController
                         $this->outputLine();
                         $this->outputDimensionPreset($dimensionPreset);
                         $this->outputLine();
-                        $this->outputLine('<b>Link:</b> %s', [
-                            $closestDocumentNode ? $this->nodeUriService->buildUriFromNode(
-                                $closestDocumentNode
-                            ) : 'No Document found'
-                        ]);
+//                        $this->outputLine('<b>Link:</b> %s', [
+//                            $closestDocumentNode ? $this->nodeUriService->buildUriFromNode(
+//                                $closestDocumentNode
+//                            ) : 'No Document found'
+//                        ]);
                         $this->outputLine();
                     }
                 }
@@ -198,6 +204,80 @@ class ReportCommandController extends CommandController
 
         if ($noOccurencesFound) {
             $this->outputLine('No occurences found.');
+        }
+    }
+
+    /**
+     * Shows a statistic of content usage of type or supertype
+     *
+     * @param string $nodeType The node type to search for
+     * @param string $workspaces Comma-separated list of workspaces to consider or _all if you want to check all
+     * @param string $dimensions Dimension values as json
+     * @param string $format report format 'cli', 'json', 'csv'
+     * @return void
+     * @throws \Neos\Eel\Exception
+     */
+    public function statisticCommand(string $superType, string $workspaces = 'live', string $dimensions = null, string $format='cli')
+    {
+        $workspaces = $this->resolveWorkspaces($workspaces);
+        $dimensionPresets = $this->contentDimensionCombinator->getAllAllowedCombinations();
+        $dimensionsParsed = $dimensions ? json_decode($dimensions, true) : null;
+
+        $stats = [];
+        foreach ($workspaces as $workspace) {
+            foreach ($dimensionPresets as $dimensionPreset) {
+                if ($dimensionsParsed && $dimensionsParsed != $dimensionPreset)  {
+                    if ($format == 'cli') {
+                        $this->outputLine('Skipped ' . json_encode($dimensionPreset));
+                    }
+                    continue;
+                }
+                $context = $this->createContentContext($workspace->getName(), $dimensionPreset);
+                $flowQuery = new FlowQuery([$context->getRootNode()]);
+                $nodes = $flowQuery->find(sprintf('[instanceof %s]', $superType));
+
+                foreach($nodes as $node) {
+                    /**
+                     * @var NodeInterface $node
+                     */
+                    $nodetypeName = $node->getNodeType()->getName();
+                    if (array_key_exists($nodetypeName, $stats)) {
+                        $stats[$nodetypeName] ++;
+                    } else {
+                        $stats[$nodetypeName] = 1;
+                    }
+                }
+
+            }
+        }
+        $report = [];
+        foreach ($this->nodeTypeManager->getSubNodeTypes($superType, false) as $nodeType) {
+            $nodetypeName = $nodeType->getName();
+            if (!array_key_exists($nodetypeName, $stats)) {
+                $stats[$nodetypeName] = 0;
+            }
+        }
+        foreach ($stats as $type => $count) {
+            $label = $this->nodeTypeManager->getNodeType($type)->getLabel();
+            $report[] = [
+                'nodeType' => $type,
+                'label' => $label,
+                'count' => $count
+            ];
+        }
+        usort($report, function(array $a, array $b) {return $b['count'] <=> $a['count'];});
+        if ($format == 'cli') {
+            $this->output->outputTable(
+                array_map(function(array $line) {return array_values($line);}, $report),
+                ['NodeType', 'Label', 'Usage']
+            );
+        } elseif ($format == 'json') {
+            $this->output->output(json_encode($report));
+        } elseif ($format == 'csv') {
+            $this->outputLine('NodeType, Label, Usage');
+            foreach ($report as $line) {
+                $this->outputLine(sprintf('%s,"%s",%s', $line['nodeType'],$line['label'],$line['count']));
+            }
         }
     }
 
