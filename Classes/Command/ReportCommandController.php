@@ -185,11 +185,11 @@ class ReportCommandController extends CommandController
                         $this->outputLine();
                         $this->outputDimensionPreset($dimensionPreset);
                         $this->outputLine();
-//                        $this->outputLine('<b>Link:</b> %s', [
-//                            $closestDocumentNode ? $this->nodeUriService->buildUriFromNode(
-//                                $closestDocumentNode
-//                            ) : 'No Document found'
-//                        ]);
+                        $this->outputLine('<b>Link:</b> %s', [
+                            $closestDocumentNode ? $this->nodeUriService->buildUriFromNode(
+                                $closestDocumentNode
+                            ) : 'No Document found'
+                        ]);
                         $this->outputLine();
                     }
                 }
@@ -424,7 +424,7 @@ class ReportCommandController extends CommandController
      */
     protected function getClosestDocumentNode(NodeInterface $node)
     {
-        if ($node->getNodeType()->isOfType('TYPO.Neos:Document')) {
+        if ($node->getNodeType()->isOfType('Neos.Neos:Document')) {
             return $node;
         }
 

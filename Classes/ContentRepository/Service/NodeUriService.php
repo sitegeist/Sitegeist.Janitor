@@ -15,6 +15,8 @@ namespace Sitegeist\Janitor\ContentRepository\Service;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Mvc\Routing\Dto\ResolveContext;
+use Neos\Flow\Mvc\Routing\Dto\RouteParameters;
 use Neos\Flow\Mvc\Routing\RouterInterface;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Neos\Domain\Service\NodeShortcutResolver;
@@ -48,12 +50,6 @@ class NodeUriService
      * @var RouterInterface
      */
     protected $router;
-
-    /**
-     * @Flow\Inject
-     * @var UriBuilder
-     */
-    protected $uriBuilder;
 
     /**
      * Constructor
@@ -101,22 +97,24 @@ class NodeUriService
                 1414771137);
         }
 
-        $reflection = new \ReflectionClass($this->uriBuilder);
-        $property = $reflection->getProperty('baseUriProvider');
-        $property->setAccessible(true);
-        $subj = $property->getValue($this->uriBuilder);
+        $routeValues = [
+            'node' => $resolvedNode,
+            '@package' => 'neos.neos',
+            '@controller' => 'frontend\node',
+            '@action' => 'show',
+            '@format' => 'html',
+        ];
 
-        //
-        // create a dummy parent request
-        //
-        $httpRequest = new ServerRequest('get', 'https://domain.tld' );
-        $request = ActionRequest::fromHttpRequest($httpRequest);
-        $this->uriBuilder->setRequest($request);
+        $uri = new Uri('http://localhost');
+        $resolveContext = new ResolveContext(
+            $uri,
+            $routeValues,
+            false ,
+            '',
+            RouteParameters::createEmpty()->withParameter('requestUriHost', $uri->getHost())
+        );
 
-        $uri = $this->uriBuilder
-            ->setFormat('html')
-            ->uriFor('show', array('node' => $resolvedNode), 'Frontend\Node', 'Neos.Neos');
-
-        return $uri;
+        $uri = $this->router->resolve($resolveContext);
+        return (string) $uri;
     }
 }
